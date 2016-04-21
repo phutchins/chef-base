@@ -1,0 +1,11 @@
+name             'chef-base'
+maintainer       'Philip Hutchins'
+maintainer_email 'flipture@gmail.com'
+license          'MIT'
+description      'Base node management cookbook'
+long_description 'Base node management cookbook'
+version          '0.1.19'
+
+depends 'chef-iptables', '~> 0.1.1'
+depends 'chef-client', '~> 4.4.0'
+depends 'sar', '~> 0.0.1'
