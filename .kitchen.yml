@@ -6,11 +6,11 @@ provisioner:
   name: chef_zero
 
 platforms:
-  - name: ubuntu-12.04
+  - name: ubuntu-14.04
   - name: centos-6.4
 
 suites:
   - name: default
     run_list:
-      - recipe[chefbp-base::default]
+      - recipe[chef-base::default]
     attributes:

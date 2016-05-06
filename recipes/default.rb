@@ -11,5 +11,9 @@ include_recipe 'chef-base::monitoring'
 include_recipe 'chef-base::users'
 include_recipe 'chef-base::vpn'
 include_recipe 'chef-base::sshd'
-include_recipe 'chef-iptables::iptables'
+if node['base']['iptables']['enabled']
+  include_recipe 'chef-iptables::iptables'
+else
+  include_recipe 'chef-iptables::iptables-remove'
+end
 include_recipe 'chef-base::sar'
