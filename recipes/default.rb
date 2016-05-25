@@ -7,6 +7,7 @@
 include_recipe 'chef-client'
 include_recipe 'chef-client::config'
 include_recipe 'chef-base::app-packages'
+include_recipe 'chef-base::bandwidth-monitoring'
 include_recipe 'chef-base::monitoring'
 include_recipe 'chef-base::users'
 include_recipe 'chef-base::vpn'
