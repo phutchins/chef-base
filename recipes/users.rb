@@ -1,7 +1,11 @@
 my_users = []
+
+# Add all users in the admin group
 search(:users, "group:admin").each do |result_user|
   my_users << result_user
 end
+
+# For this environment, add ssh account for all users in allowed groups
 if !node['users'].nil? && !node['users']['groups'].nil? then
   node['users']['groups'].each do |group|
     search(:users, "group:#{group}").each do |result_user|
@@ -35,6 +39,7 @@ group 'staff' do
   action :create
 end
 
+# Add all of the users that we found that need ssh accounts
 my_users.each do |my_user|
   home_dir = my_user['home_dir'] || File.join('/home', my_user['id'])
   group my_user['unix_group'] do
@@ -125,7 +130,10 @@ end
 sudoers = []
 remove_sudoers = []
 remove_admins = []
+
+# Find all users that should be sudoers
 if !node['users'].nil? && !node['users']['sudo_groups'].nil? then
+  # Add all admins to sudoers
   search(:users, "group:admin").each do |result_user|
     if !result_user['disabled']
       sudoers << result_user['id']
@@ -134,6 +142,8 @@ if !node['users'].nil? && !node['users']['sudo_groups'].nil? then
       remove_sudoers << result_user['id']
     end
   end
+
+  # Add all users in admin add_groups to sudoers
   search(:users, "add_groups:admin").each do |result_user|
     if !result_user['disabled']
       sudoers << result_user['id']
@@ -142,6 +152,8 @@ if !node['users'].nil? && !node['users']['sudo_groups'].nil? then
       remove_sudoers << result_user['id']
     end
   end
+
+  # Add all users in this environments sudo_groups group array to sudoers
   node['users']['sudo_groups'].each do |group|
     search(:users, "group:#{group}").each do |result_user|
       if !result_user['disabled']
@@ -150,6 +162,8 @@ if !node['users'].nil? && !node['users']['sudo_groups'].nil? then
         remove_sudoers << result_user['id']
       end
     end
+
+    # Add all users with add_group matching this env's sudo_group list to sudoers
     search(:users, "add_groups:#{group}").each do |result_user|
       if !result_user['disabled']
         sudoers << result_user['id']
@@ -159,6 +173,8 @@ if !node['users'].nil? && !node['users']['sudo_groups'].nil? then
     end
   end
 end
+
+# TODO: Remove users from groups that they are no longer in!
 
 group 'admin' do
   excluded_members remove_admins
