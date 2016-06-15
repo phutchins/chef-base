@@ -1,14 +1,15 @@
-if platform?("ubuntu")
-  ssh_service_name = "ssh"
-end
-
-if platform?("fedora")
-  ssh_service_name = "sshd"
-end
-
-service ssh_service_name do
+service 'sshd' do
   if platform?("ubuntu")
     provider Chef::Provider::Service::Upstart
+  end
+
+  case node['platform']
+  when 'debian'
+    service_name 'ssh'
+  when 'ubuntu'
+    service_name 'ssh'
+  else
+    service_name 'sshd'
   end
   supports :status => true, :restart => true
 end
@@ -22,11 +23,7 @@ template "/etc/ssh/sshd_config" do
     :listen_port => node['base']['sshd']['listen_port'],
     :password_login => node['base']['sshd']['password_login']
   })
-  if platform?("fedora")
-    notifies :restart, "service[sshd]", :immediately
-  else
-    notifies :restart, "service[ssh]", :immediately
-  end
+  notifies :restart, "service[sshd]", :immediately
 end
 
 #ruby_block "change sshd port" do

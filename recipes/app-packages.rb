@@ -13,7 +13,7 @@ include_recipe "apt"
 #  end
 #end
 
-%w[git vim htop bmon iftop tmux screen iotop vnstat].each do |pkg|
+%w[git vim htop bmon zsh iftop tmux screen iotop vnstat].each do |pkg|
   package pkg do
     action :install
   end

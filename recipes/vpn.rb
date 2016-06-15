@@ -69,13 +69,16 @@ if node['base']['vpn_enabled']
     only_if do File.exists?("/etc/openvpn/myco.tblk") end
   end
 else
-  package 'openvpn' do
-    action :purge
-  end
+  # We should find a way to disable the client specifically in case there
+  # is another installation of openvpn on the host we're working with
+  #package 'openvpn' do
+  #  action :purge
+  #end
 
-  directory '/etc/openvpn' do
-    action :delete
-    recursive true
-    only_if do File.exists?('/etc/openvpn') end
-  end
+  # This is a bad idea
+  #directory '/etc/openvpn' do
+  #  action :delete
+  #  recursive true
+  #  only_if do File.exists?('/etc/openvpn') end
+  #end
 end
