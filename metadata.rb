@@ -7,5 +7,5 @@ long_description 'Base node management cookbook'
 version          '0.1.20'
 
 depends 'chef-iptables', '~> 0.1.1'
-depends 'chef-client', '~> 4.4.0'
+depends 'chef-client', '~> 4.6.0'
 depends 'sar', '~> 0.0.1'
