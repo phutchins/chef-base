@@ -16,6 +16,7 @@ if !node['users'].nil? && !node['users']['groups'].nil? then
     end
   end
 end
+
 if !node['users'].nil? && !node['users']['sudo_groups'].nil? then
   node['users']['sudo_groups'].each do |group|
     search(:users, "group:#{group}").each do |result_user|
@@ -26,6 +27,7 @@ if !node['users'].nil? && !node['users']['sudo_groups'].nil? then
     end
   end
 end
+
 if !node['users'].nil? && !node['users']['sudo_users'].nil? then
   node['users']['sudo_users'].each do |username|
     search(:users, "id:#{username}").each do |result_user|
