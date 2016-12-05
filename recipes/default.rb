@@ -7,8 +7,14 @@
 
 case node['platform']
 when 'debian'
-  # node.set['chef_client']['init_style'] = 'systemd'
   node.set['chef_client']['init_style'] = 'init'
+when 'ubuntu'
+  case node['platform_version']
+  when '14.04'
+    node.set['chef_client']['init_style'] = 'upstart'
+  when '16.04'
+    node.set['chef_client']['init_style'] = 'systemd'
+  end
 end
 
 include_recipe 'chef-client'

@@ -1,4 +1,5 @@
 my_users = []
+custom_sudoers = []
 
 # Add all users in the admin group
 search(:users, "group:admin").each do |result_user|
@@ -10,9 +11,21 @@ if !node['users'].nil? && !node['users']['groups'].nil? then
   node['users']['groups'].each do |group|
     search(:users, "group:#{group}").each do |result_user|
       my_users << result_user
+
+      if !result_user['disabled']
+        if result_user['sudo_file'] then
+          custom_sudoers << result_user
+        end
+      else
+
+      end
     end
     search(:users, "add_groups:#{group}").each do |result_user|
       my_users << result_user
+
+      if result_user['sudo_file'] then
+        custom_sudoers << result_user
+      end
     end
   end
 end
@@ -44,9 +57,10 @@ end
 # Add all of the users that we found that need ssh accounts
 my_users.each do |my_user|
   home_dir = my_user['home_dir'] || File.join('/home', my_user['id'])
+
   group my_user['unix_group'] do
     action :create
-  end unless my_user['unix_group'].nil?
+  end unless my_user['unix_group'].nil? || my_user['disabled']
 
   user my_user['id'] do
     comment my_user['name']
@@ -119,6 +133,11 @@ my_users.each do |my_user|
         action :delete
       end
     end
+
+    # Remove the users sudo file if it exists
+    file "/etc/sudoers.d/#{my_user['id']}" do
+      action :delete
+    end
   end
 end
 
@@ -127,6 +146,15 @@ cookbook_file "/etc/sudoers.d/sudoers" do
   owner "root"
   group "root"
   action :create
+end
+
+custom_sudoers.each do |user|
+  file "/etc/sudoers.d/#{user['id']}" do
+    action :create
+    owner "root"
+    group "root"
+    content user['sudo_file']
+  end
 end
 
 sudoers = []
@@ -175,6 +203,7 @@ if !node['users'].nil? && !node['users']['sudo_groups'].nil? then
     end
   end
 end
+
 
 # TODO: Remove users from groups that they are no longer in!
 
