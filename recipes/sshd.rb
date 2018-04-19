@@ -1,16 +1,26 @@
 service 'sshd' do
-  if platform?("ubuntu")
+  if node['chef_client']['init_style'] == 'upstart'
     provider Chef::Provider::Service::Upstart
+  else
+    provider Chef::Provider::Service::Systemd
   end
 
   case node['platform']
   when 'debian'
     service_name 'ssh'
   when 'ubuntu'
-    service_name 'ssh'
+    case node['chef_client']['init_style']
+      when 'upstart'
+        service_name 'ssh'
+      when 'systemd'
+        service_name 'sshd'
+    else
+      service_name 'sshd'
+    end
   else
     service_name 'sshd'
   end
+
   supports :status => true, :restart => true
 end
 
