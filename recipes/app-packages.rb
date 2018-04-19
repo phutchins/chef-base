@@ -1,4 +1,4 @@
-include_recipe "apt"
+#include_recipe "apt"
 #if platform?("ubuntu")
 #  execute "apt_get_update" do
 #    command "apt-get update"
