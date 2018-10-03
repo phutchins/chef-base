@@ -17,7 +17,7 @@ if node['base']['monitoring']['enabled']
     action :create
     notifies :restart, "service[zabbix-agent]"
     variables ({
-      :hostname => node['hostname'],
+      :hostname => node['base']['monitoring']['hostname'] ||= node['hostname'],
       :user_params => node['base']['monitoring']['user_params'],
       :server => node['base']['monitoring']['server']
     })
