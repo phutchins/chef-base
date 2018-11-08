@@ -14,6 +14,8 @@ when 'ubuntu'
     node.set['chef_client']['init_style'] = 'upstart'
   when '16.04'
     node.set['chef_client']['init_style'] = 'systemd'
+  when '18.04'
+    node.set['chef_client']['init_style'] = 'systemd'
   end
 end
 
